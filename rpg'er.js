@@ -5,7 +5,8 @@ var viewport = document.querySelector("#viewport");
 
 var images = {
     player: init_image("images/player.png"),
-    grass_tile: init_image("images/grass_tile.png")
+    metal_tile: init_image("images/metal_tile.png"),
+    oil_tile: init_image("images/oil_tile.png")
 };
 var keys = {
     arrowUp: false,
@@ -14,8 +15,8 @@ var keys = {
     arrowRight: false
 };
 var player = {
-    x: 200,
-    y: 200,
+    x: 128,
+    y: 128,
     width: 32,
     height: 32,
     speed: 5
@@ -27,9 +28,11 @@ function init_map() {
     for (let x = 0; x < 100; x++) {
         map[x] = [];
         for (let y = 0; y < 100; y++) {
-            map[x][y] = {tile: 'grass_tile'};
+            map[x][y] = {tile: {name: 'metal_tile', isWalkable: true}};
         }
     }
+
+    map[5][5] = {tile: {name: 'oil_tile', isWalkable: false}};
 }
 
 function init_image(path) {
@@ -41,6 +44,7 @@ function init_image(path) {
 function clamp(num, min, max) {
     return Math.min(Math.max(num, min), max);
 }
+
 ///////////////////////////////////////////////////////////////////////////
 
 
@@ -85,38 +89,189 @@ addEventListener("keyup", function(e) {
 setTimeout(function() {
     setInterval(function() {
         canvas.clearRect(0, 0, canvas.canvas.width, canvas.canvas.height);
-    
         if (keys.arrowUp == true) {
-            player.y -= player.speed;
+            for (let i = 0; i < player.speed; i++) {
+                let currentBlockX = clamp(parseInt(player.x / 32), 0, 99);
+                let currentBlockY = clamp(parseInt(player.y / 32), 0, 99);
+
+                if (player.y % 32 == 0) {
+                    if (player.x % 32 == 0) {
+                        if (map[clamp(currentBlockY, 0, 99)][clamp(currentBlockY - 1, 0, 99)].tile.isWalkable != false) {
+                            player.y -= 1;
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                    else {
+                        if (player.x / 32 > parseInt(player.x / 32)) {
+                            if (map[clamp(currentBlockX, 0, 99)][clamp(currentBlockY - 1, 0, 99)].tile.isWalkable != false &&
+                            map[clamp(currentBlockX + 1, 0, 99)][clamp(currentBlockY - 1, 0, 99)].tile.isWalkable != false) {
+                                player.y -= 1;
+                            }
+                            else {
+                                break;
+                            }
+                        }
+                        else if (player.x / 32 < parseInt(player.x / 32)) {
+                            if (map[clamp(currentBlockX, 0, 99)][clamp(currentBlockY - 1, 0, 99)].tile.isWalkable != false &&
+                            map[clamp(currentBlockX - 1, 0, 99)][clamp(currentBlockY - 1, 0, 99)].tile.isWalkable != false) {
+                                player.y -= 1;
+                            }
+                            else {
+                                break;
+                            }
+                        }
+                        
+                    }
+                }
+                else {
+                    player.y -= 1;
+                }
+            }
         }
         if (keys.arrowDown == true) {
-            player.y += player.speed;
+            for (let i = 0; i < player.speed; i++) {
+                let currentBlockX = clamp(parseInt(player.x / 32), 0, 99);
+                let currentBlockY = clamp(parseInt(player.y / 32), 0, 99);
+
+                if (player.y % 32 == 0) {
+                    if (player.x % 32 == 0) {
+                        if (map[clamp(currentBlockY, 0, 99)][clamp(currentBlockY + 1, 0, 99)].tile.isWalkable != false) {
+                            player.y += 1;
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                    else {
+                        if (player.x / 32 > parseInt(player.x / 32)) {
+                            if (map[clamp(currentBlockX, 0, 99)][clamp(currentBlockY + 1, 0, 99)].tile.isWalkable != false &&
+                            map[clamp(currentBlockX + 1, 0, 99)][clamp(currentBlockY + 1, 0, 99)].tile.isWalkable != false) {
+                                player.y += 1;
+                            }
+                            else {
+                                break;
+                            }
+                        }
+                        else if (player.x / 32 < parseInt(player.x / 32)) {
+                            if (map[clamp(currentBlockX, 0, 99)][clamp(currentBlockY + 1, 0, 99)].tile.isWalkable != false &&
+                            map[clamp(currentBlockX - 1, 0, 99)][clamp(currentBlockY + 1, 0, 99)].tile.isWalkable != false) {
+                                player.y += 1;
+                            }
+                            else {
+                                break;
+                            }
+                        }
+                        
+                    }
+                }
+                else {
+                    player.y += 1;
+                }
+            }
         }
         if (keys.arrowLeft == true) {
-            player.x -= player.speed;
+            for (let i = 0; i < player.speed; i++) {
+                let currentBlockX = clamp(parseInt(player.x / 32), 0, 99);
+                let currentBlockY = clamp(parseInt(player.y / 32), 0, 99);
+
+                if (player.x % 32 == 0) {
+                    if (player.y % 32 == 0) {
+                        if (map[clamp(currentBlockX - 1, 0, 99)][clamp(currentBlockY, 0, 99)].tile.isWalkable != false) {
+                            player.x -= 1;
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                    else {
+                        if (player.y / 32 > parseInt(player.y / 32)) {
+                            if (map[clamp(currentBlockX - 1, 0, 99)][clamp(currentBlockY, 0, 99)].tile.isWalkable != false &&
+                            map[clamp(currentBlockX - 1, 0, 99)][clamp(currentBlockY + 1, 0, 99)].tile.isWalkable != false) {
+                                player.x -= 1;
+                            }
+                            else {
+                                break;
+                            }
+                        }
+                        else if (player.y / 32 < parseInt(player.y / 32)) {
+                            if (map[clamp(currentBlockX - 1, 0, 99)][clamp(currentBlockY, 0, 99)].tile.isWalkable != false &&
+                            map[clamp(currentBlockX - 1, 0, 99)][clamp(currentBlockY - 1, 0, 99)].tile.isWalkable != false) {
+                                player.x -= 1;
+                            }
+                            else {
+                                break;
+                            }
+                        }
+                        
+                    }
+                }
+                else {
+                    player.x -= 1;
+                }
+            }
         }
         if (keys.arrowRight == true) {
-            player.x += player.speed;
-        }
-    
-        ////////////////
-    
-        viewport.scrollTo(player.x - (640 / 2), player.y - (480 / 2));
-    
-        for (let x = clamp(parseInt((viewport.scrollLeft - (640 / 2)) / 32), 0, 100);
-        x <= clamp(parseInt((viewport.scrollLeft + (640)) / 32), 0, 100);
-        x++) {
-            for (let y = clamp(parseInt((viewport.scrollTop - (480 / 2)) / 32), 0, 100);
-            y <= clamp(parseInt((viewport.scrollTop + (480)) / 32), 0, 100);
-            y++) {
-                let b = map[x][y];
-    
-                if (b.tile != undefined && images[b.tile] != undefined) {
-                    canvas.drawImage(images[b.tile], x * 32, y * 32, 32, 32);
+            for (let i = 0; i < player.speed; i++) {
+                let currentBlockX = clamp(parseInt(player.x / 32), 0, 99);
+                let currentBlockY = clamp(parseInt(player.y / 32), 0, 99);
+
+                if (player.x % 32 == 0) {
+                    if (player.y % 32 == 0) {
+                        if (map[clamp(currentBlockX + 1, 0, 99)][clamp(currentBlockY, 0, 99)].tile.isWalkable != false) {
+                            player.x += 1;
+                        }
+                        else {
+                            break;
+                        }
+                    }
+                    else {
+                        if (player.y / 32 > parseInt(player.y / 32)) {
+                            if (map[clamp(currentBlockX + 1, 0, 99)][clamp(currentBlockY, 0, 99)].tile.isWalkable != false &&
+                            map[clamp(currentBlockX + 1, 0, 99)][clamp(currentBlockY + 1, 0, 99)].tile.isWalkable != false) {
+                                player.x += 1;
+                            }
+                            else {
+                                break;
+                            }
+                        }
+                        else if (player.y / 32 < parseInt(player.y / 32)) {
+                            if (map[clamp(currentBlockX + 1, 0, 99)][clamp(currentBlockY, 0, 99)].tile.isWalkable != false &&
+                            map[clamp(currentBlockX + 1, 0, 99)][clamp(currentBlockY - 1, 0, 99)].tile.isWalkable != false) {
+                                player.x += 1;
+                            }
+                            else {
+                                break;
+                            }
+                        }
+                        
+                    }
+                }
+                else {
+                    player.x += 1;
                 }
             }
         }
     
-        canvas.drawImage(images.player, player.x - (player.width / 2), player.y - (player.height / 2), player.width, player.height);
+        ////////////////
+    
+        viewport.scrollTo((player.x + (player.width / 2)) - (640 / 2), (player.y + (player.height / 2)) - (480 / 2));
+    
+        for (let x = clamp(parseInt((viewport.scrollLeft - (640 / 2)) / 32), 0, 99);
+        x <= clamp(parseInt((viewport.scrollLeft + (640)) / 32), 0, 99);
+        x++) {
+            for (let y = clamp(parseInt((viewport.scrollTop - (480 / 2)) / 32), 0, 99);
+            y <= clamp(parseInt((viewport.scrollTop + (480)) / 32), 0, 99);
+            y++) {
+                let b = map[x][y];
+    
+                if (b.tile != undefined && images[b.tile.name] != undefined) {
+                    canvas.drawImage(images[b.tile.name], x * 32, y * 32, 32, 32);
+                }
+            }
+        }
+    
+        canvas.drawImage(images.player, player.x, player.y, player.width, player.height);
     }, 20);
 }, 20);
