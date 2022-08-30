@@ -9,7 +9,8 @@ var images = {
     player_idle_left: init_image("images/player_idle_left.png"),
     player_idle_right: init_image("images/player_idle_right.png"),
     metal_tile: init_image("images/metal_tile.png"),
-    oil_tile: init_image("images/oil_tile.png")
+    oil_tile: init_image("images/oil_tile.png"),
+    oil_patch: init_image("images/oil_patch.png"),
 };
 var keys = {
     arrowUp: false,
@@ -40,7 +41,7 @@ function init_map(premap = undefined) {
         for (let x = 0; x < 100; x++) {
             map[x] = [];
             for (let y = 0; y < 100; y++) {
-                map[x][y] = {tile: {name: 'metal_tile', isWalkable: true}};
+                map[x][y] = {tile: {name: 'metal_tile', isWalkable: true}, object: {name: null, isWalkable: true}};
             }
         }
     }
@@ -49,10 +50,11 @@ function init_map(premap = undefined) {
         map = premap;
     }
 
-    map[4][7] = {tile: {name: 'oil_tile', isWalkable: false}};
-    map[5][5] = {tile: {name: 'oil_tile', isWalkable: false}};
-    map[5][7] = {tile: {name: 'oil_tile', isWalkable: false}};
-    map[99][99] = {tile: {name: 'oil_tile', isWalkable: false}};
+    map[7][7].object = {name: 'oil_patch', isWalkable: false};
+    map[4][7].tile = {name: 'oil_tile', isWalkable: false};
+    map[5][5].tile = {name: 'oil_tile', isWalkable: false};
+    map[5][7].tile = {name: 'oil_tile', isWalkable: false};
+    map[99][99].tile = {name: 'oil_tile', isWalkable: false};
 }
 
 function init_image(path) {
@@ -130,7 +132,9 @@ setTimeout(function() {
 
                 if (player.y % 32 == 0) {
                     if (player.x % 32 == 0) {
-                        if (map[clamp(currentBlockX, 0, 99)][clamp(currentBlockY - 1, 0, 99)].tile.isWalkable != false) {
+                        let tile1 = map[clamp(currentBlockX, 0, 99)][clamp(currentBlockY - 1, 0, 99)];
+
+                        if (tile1.tile.isWalkable != false && tile1.object.isWalkable != false) {
                             player.y -= 1;
                         }
                         else {
@@ -139,8 +143,11 @@ setTimeout(function() {
                     }
                     else {
                         if (player.x / 32 > parseInt(player.x / 32)) {
-                            if (map[clamp(currentBlockX, 0, 99)][clamp(currentBlockY - 1, 0, 99)].tile.isWalkable != false &&
-                            map[clamp(currentBlockX + 1, 0, 99)][clamp(currentBlockY - 1, 0, 99)].tile.isWalkable != false) {
+                            let tile1 = map[clamp(currentBlockX, 0, 99)][clamp(currentBlockY - 1, 0, 99)];
+                            let tile2 = map[clamp(currentBlockX + 1, 0, 99)][clamp(currentBlockY - 1, 0, 99)];
+
+                            if (tile1.tile.isWalkable != false && tile2.tile.isWalkable != false && 
+                                tile1.object.isWalkable != false & tile2.object.isWalkable != false) {
                                 player.y -= 1;
                             }
                             else {
@@ -148,8 +155,11 @@ setTimeout(function() {
                             }
                         }
                         else if (player.x / 32 < parseInt(player.x / 32)) {
-                            if (map[clamp(currentBlockX, 0, 99)][clamp(currentBlockY - 1, 0, 99)].tile.isWalkable != false &&
-                            map[clamp(currentBlockX - 1, 0, 99)][clamp(currentBlockY - 1, 0, 99)].tile.isWalkable != false) {
+                            let tile1 = map[clamp(currentBlockX, 0, 99)][clamp(currentBlockY - 1, 0, 99)];
+                            let tile2 = map[clamp(currentBlockX - 1, 0, 99)][clamp(currentBlockY - 1, 0, 99)];
+
+                            if (tile1.tile.isWalkable != false && tile2.tile.isWalkable != false && 
+                                tile1.object.isWalkable != false & tile2.object.isWalkable != false) {
                                 player.y -= 1;
                             }
                             else {
@@ -176,7 +186,9 @@ setTimeout(function() {
 
                 if (player.y % 32 == 0) {
                     if (player.x % 32 == 0) {
-                        if (map[clamp(currentBlockX, 0, 99)][clamp(currentBlockY + 1, 0, 99)].tile.isWalkable != false) {
+                        let tile1 = map[clamp(currentBlockX, 0, 99)][clamp(currentBlockY + 1, 0, 99)];
+
+                        if (tile1.tile.isWalkable != false && tile1.object.isWalkable != false) {
                             player.y += 1;
                         }
                         else {
@@ -185,8 +197,11 @@ setTimeout(function() {
                     }
                     else {
                         if (player.x / 32 > parseInt(player.x / 32)) {
-                            if (map[clamp(currentBlockX, 0, 99)][clamp(currentBlockY + 1, 0, 99)].tile.isWalkable != false &&
-                            map[clamp(currentBlockX + 1, 0, 99)][clamp(currentBlockY + 1, 0, 99)].tile.isWalkable != false) {
+                            let tile1 = map[clamp(currentBlockX, 0, 99)][clamp(currentBlockY + 1, 0, 99)];
+                            let tile2 = map[clamp(currentBlockX + 1, 0, 99)][clamp(currentBlockY + 1, 0, 99)];
+
+                            if (tile1.tile.isWalkable != false && tile2.tile.isWalkable != false && 
+                                tile1.object.isWalkable != false & tile2.object.isWalkable != false) {
                                 player.y += 1;
                             }
                             else {
@@ -194,8 +209,11 @@ setTimeout(function() {
                             }
                         }
                         else if (player.x / 32 < parseInt(player.x / 32)) {
-                            if (map[clamp(currentBlockX, 0, 99)][clamp(currentBlockY + 1, 0, 99)].tile.isWalkable != false &&
-                            map[clamp(currentBlockX - 1, 0, 99)][clamp(currentBlockY + 1, 0, 99)].tile.isWalkable != false) {
+                            let tile1 = map[clamp(currentBlockX, 0, 99)][clamp(currentBlockY + 1, 0, 99)];
+                            let tile2 = map[clamp(currentBlockX - 1, 0, 99)][clamp(currentBlockY + 1, 0, 99)];
+
+                            if (tile1.tile.isWalkable != false && tile2.tile.isWalkable != false && 
+                                tile1.object.isWalkable != false & tile2.object.isWalkable != false) {
                                 player.y += 1;
                             }
                             else {
@@ -222,7 +240,9 @@ setTimeout(function() {
 
                 if (player.x % 32 == 0) {
                     if (player.y % 32 == 0) {
-                        if (map[clamp(currentBlockX - 1, 0, 99)][clamp(currentBlockY, 0, 99)].tile.isWalkable != false) {
+                        let tile1 = map[clamp(currentBlockX - 1, 0, 99)][clamp(currentBlockY, 0, 99)];
+
+                        if (tile1.tile.isWalkable != false && tile1.object.isWalkable != false) {
                             player.x -= 1;
                         }
                         else {
@@ -231,8 +251,11 @@ setTimeout(function() {
                     }
                     else {
                         if (player.y / 32 > parseInt(player.y / 32)) {
-                            if (map[clamp(currentBlockX - 1, 0, 99)][clamp(currentBlockY, 0, 99)].tile.isWalkable != false &&
-                            map[clamp(currentBlockX - 1, 0, 99)][clamp(currentBlockY + 1, 0, 99)].tile.isWalkable != false) {
+                            let tile1 = map[clamp(currentBlockX - 1, 0, 99)][clamp(currentBlockY, 0, 99)];
+                            let tile2 = map[clamp(currentBlockX - 1, 0, 99)][clamp(currentBlockY + 1, 0, 99)];
+
+                            if (tile1.tile.isWalkable != false && tile2.tile.isWalkable != false && 
+                                tile1.object.isWalkable != false & tile2.object.isWalkable != false) {
                                 player.x -= 1;
                             }
                             else {
@@ -240,8 +263,11 @@ setTimeout(function() {
                             }
                         }
                         else if (player.y / 32 < parseInt(player.y / 32)) {
-                            if (map[clamp(currentBlockX - 1, 0, 99)][clamp(currentBlockY, 0, 99)].tile.isWalkable != false &&
-                            map[clamp(currentBlockX - 1, 0, 99)][clamp(currentBlockY - 1, 0, 99)].tile.isWalkable != false) {
+                            let tile1 = map[clamp(currentBlockX - 1, 0, 99)][clamp(currentBlockY, 0, 99)];
+                            let tile2 = map[clamp(currentBlockX - 1, 0, 99)][clamp(currentBlockY - 1, 0, 99)];
+
+                            if (tile1.tile.isWalkable != false && tile2.tile.isWalkable != false && 
+                                tile1.object.isWalkable != false & tile2.object.isWalkable != false) {
                                 player.x -= 1;
                             }
                             else {
@@ -268,7 +294,9 @@ setTimeout(function() {
 
                 if (player.x % 32 == 0) {
                     if (player.y % 32 == 0) {
-                        if (map[clamp(currentBlockX + 1, 0, 99)][clamp(currentBlockY, 0, 99)].tile.isWalkable != false) {
+                        let tile1 = map[clamp(currentBlockX + 1, 0, 99)][clamp(currentBlockY, 0, 99)];
+
+                        if (tile1.tile.isWalkable != false && tile1.object.isWalkable != false) {
                             player.x += 1;
                         }
                         else {
@@ -277,8 +305,11 @@ setTimeout(function() {
                     }
                     else {
                         if (player.y / 32 > parseInt(player.y / 32)) {
-                            if (map[clamp(currentBlockX + 1, 0, 99)][clamp(currentBlockY, 0, 99)].tile.isWalkable != false &&
-                            map[clamp(currentBlockX + 1, 0, 99)][clamp(currentBlockY + 1, 0, 99)].tile.isWalkable != false) {
+                            let tile1 = map[clamp(currentBlockX + 1, 0, 99)][clamp(currentBlockY, 0, 99)];
+                            let tile2 = map[clamp(currentBlockX + 1, 0, 99)][clamp(currentBlockY + 1, 0, 99)];
+
+                            if (tile1.tile.isWalkable != false && tile2.tile.isWalkable != false && 
+                                tile1.object.isWalkable != false & tile2.object.isWalkable != false) {
                                 player.x += 1;
                             }
                             else {
@@ -286,8 +317,11 @@ setTimeout(function() {
                             }
                         }
                         else if (player.y / 32 < parseInt(player.y / 32)) {
-                            if (map[clamp(currentBlockX + 1, 0, 99)][clamp(currentBlockY, 0, 99)].tile.isWalkable != false &&
-                            map[clamp(currentBlockX + 1, 0, 99)][clamp(currentBlockY - 1, 0, 99)].tile.isWalkable != false) {
+                            let tile1 = map[clamp(currentBlockX + 1, 0, 99)][clamp(currentBlockY, 0, 99)];
+                            let tile2 = map[clamp(currentBlockX + 1, 0, 99)][clamp(currentBlockY - 1, 0, 99)];
+
+                            if (tile1.tile.isWalkable != false && tile2.tile.isWalkable != false && 
+                                tile1.object.isWalkable != false & tile2.object.isWalkable != false) {
                                 player.x += 1;
                             }
                             else {
@@ -333,6 +367,9 @@ setTimeout(function() {
     
                 if (b.tile != undefined && images[b.tile.name] != undefined) {
                     canvas.drawImage(images[b.tile.name], x * 32, y * 32, 32, 32);
+                }
+                if (b.object != undefined && images[b.object.name] != undefined) {
+                    canvas.drawImage(images[b.object.name], x * 32, y * 32, 32, 32);
                 }
             }
         }
