@@ -49,7 +49,9 @@ function init_map(premap = undefined) {
         map = premap;
     }
 
+    map[4][7] = {tile: {name: 'oil_tile', isWalkable: false}};
     map[5][5] = {tile: {name: 'oil_tile', isWalkable: false}};
+    map[5][7] = {tile: {name: 'oil_tile', isWalkable: false}};
     map[99][99] = {tile: {name: 'oil_tile', isWalkable: false}};
 }
 
@@ -106,13 +108,16 @@ addEventListener("keyup", function(e) {
 
 setTimeout(function() {
     setInterval(function() {
+        //clear rect
         canvas.clearRect(0, 0, canvas.canvas.width, canvas.canvas.height);
 
+        //ticks (for animation)
         ticks = ticks + 1;
         if (ticks > 2000000000) {
             ticks = 1;
         }
 
+        //keyboard input
         if (keys.arrowUp == true) {
             animations.player.frames[0] = images.player_idle_up;
             for (let i = 0; i < player.speed; i++) {
@@ -125,7 +130,7 @@ setTimeout(function() {
 
                 if (player.y % 32 == 0) {
                     if (player.x % 32 == 0) {
-                        if (map[clamp(currentBlockY, 0, 99)][clamp(currentBlockY - 1, 0, 99)].tile.isWalkable != false) {
+                        if (map[clamp(currentBlockX, 0, 99)][clamp(currentBlockY - 1, 0, 99)].tile.isWalkable != false) {
                             player.y -= 1;
                         }
                         else {
@@ -171,7 +176,7 @@ setTimeout(function() {
 
                 if (player.y % 32 == 0) {
                     if (player.x % 32 == 0) {
-                        if (map[clamp(currentBlockY, 0, 99)][clamp(currentBlockY + 1, 0, 99)].tile.isWalkable != false) {
+                        if (map[clamp(currentBlockX, 0, 99)][clamp(currentBlockY + 1, 0, 99)].tile.isWalkable != false) {
                             player.y += 1;
                         }
                         else {
@@ -297,25 +302,8 @@ setTimeout(function() {
                 }
             }
         }
-    
-        ////////////////
-    
-        viewport.scrollTo((player.x + (player.width / 2)) - (640 / 2), (player.y + (player.height / 2)) - (480 / 2));
-    
-        for (let x = clamp(parseInt((viewport.scrollLeft - (640 / 2)) / 32), 0, 99);
-        x <= clamp(parseInt((viewport.scrollLeft + (640)) / 32), 0, 99);
-        x++) {
-            for (let y = clamp(parseInt((viewport.scrollTop - (480 / 2)) / 32), 0, 99);
-            y <= clamp(parseInt((viewport.scrollTop + (480)) / 32), 0, 99);
-            y++) {
-                let b = map[x][y];
-    
-                if (b.tile != undefined && images[b.tile.name] != undefined) {
-                    canvas.drawImage(images[b.tile.name], x * 32, y * 32, 32, 32);
-                }
-            }
-        }
 
+        //animations update
         for (let i in animations) {
             let anim = animations[i];
 
@@ -330,7 +318,26 @@ setTimeout(function() {
                 }
             }
         }
+
+        //camera scrolling
+        viewport.scrollTo((player.x + (player.width / 2)) - (640 / 2), (player.y + (player.height / 2)) - (480 / 2));
     
+        //tilemap rendering
+        for (let x = clamp(parseInt((viewport.scrollLeft - (640 / 2)) / 32), 0, 99);
+        x <= clamp(parseInt((viewport.scrollLeft + (640)) / 32), 0, 99);
+        x++) {
+            for (let y = clamp(parseInt((viewport.scrollTop - (480 / 2)) / 32), 0, 99);
+            y <= clamp(parseInt((viewport.scrollTop + (480)) / 32), 0, 99);
+            y++) {
+                let b = map[x][y];
+    
+                if (b.tile != undefined && images[b.tile.name] != undefined) {
+                    canvas.drawImage(images[b.tile.name], x * 32, y * 32, 32, 32);
+                }
+            }
+        }
+
+        //player draw
         canvas.drawImage(animations.player.frames[animations.player.currentFrame], player.x, player.y, player.width, player.height);
     }, 20);
 }, 20);
