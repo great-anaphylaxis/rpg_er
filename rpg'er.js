@@ -1,7 +1,12 @@
 //
 
 var canvas = document.querySelector("canvas").getContext("2d");
+
+canvas.imageSmoothingEnabled = false;
+
 var viewport = document.querySelector("#viewport");
+var viewportWidth = parseInt(viewport.style.width);
+var viewportHeight = parseInt(viewport.style.height);
 
 var images = {
     player_idle_up: init_image("images/player_idle_up.png"),
@@ -68,8 +73,6 @@ function clamp(num, min, max) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
-
-
 
 init_map();
 
@@ -354,14 +357,14 @@ setTimeout(function() {
         }
 
         //camera scrolling
-        viewport.scrollTo((player.x + (player.width / 2)) - (640 / 2), (player.y + (player.height / 2)) - (480 / 2));
+        viewport.scrollTo((player.x + (player.width / 2)) - (viewportWidth / 2), (player.y + (player.height / 2)) - (viewportHeight / 2));
     
         //tilemap rendering
-        for (let x = clamp(parseInt((viewport.scrollLeft - (640 / 2)) / 32), 0, 99);
-        x <= clamp(parseInt((viewport.scrollLeft + (640)) / 32), 0, 99);
+        for (let x = clamp(parseInt((viewport.scrollLeft - (viewportWidth / 2)) / 32), 0, 99);
+        x <= clamp(parseInt((viewport.scrollLeft + (viewportWidth)) / 32), 0, 99);
         x++) {
-            for (let y = clamp(parseInt((viewport.scrollTop - (480 / 2)) / 32), 0, 99);
-            y <= clamp(parseInt((viewport.scrollTop + (480)) / 32), 0, 99);
+            for (let y = clamp(parseInt((viewport.scrollTop - (viewportHeight / 2)) / 32), 0, 99);
+            y <= clamp(parseInt((viewport.scrollTop + (viewportHeight)) / 32), 0, 99);
             y++) {
                 let b = map[x][y];
     
