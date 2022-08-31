@@ -8,6 +8,10 @@ var viewport = document.querySelector("#viewport");
 var viewportWidth = parseInt(viewport.style.width);
 var viewportHeight = parseInt(viewport.style.height);
 
+var dialog = document.getElementById("dialog");
+var dialog_text = dialog.childNodes[0];
+var dialog_list = [];
+
 var images = {
     player_idle_up: init_image("images/player_idle_up.png"),
     player_idle_down: init_image("images/player_idle_down.png"),
@@ -28,7 +32,7 @@ var player = {
     y: 128,
     width: 32,
     height: 32,
-    speed: 5
+    speed: 1
 };
 var animations = {
     player: {
@@ -72,6 +76,16 @@ function clamp(num, min, max) {
     return Math.min(Math.max(num, min), max);
 }
 
+function open_dialog(msg) {
+    dialog_text.textContent = msg;
+    dialog.style.display = 'block';
+}
+
+function close_dialog() {
+    dialog.style.display = 'none';
+    dialog_text.textContent = "";
+}
+
 ///////////////////////////////////////////////////////////////////////////
 
 init_map();
@@ -108,6 +122,17 @@ addEventListener("keyup", function(e) {
 
     if (e.key == 'ArrowRight') {
         keys.arrowRight = false;
+    }
+});
+
+document.getElementById("dialog-ok").addEventListener("click", function(e) {
+    let msg = dialog_list.shift();
+
+    if (msg != undefined && msg != null) {
+        open_dialog(msg);
+    }
+    else {
+        close_dialog();
     }
 });
 

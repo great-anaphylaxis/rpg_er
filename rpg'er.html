@@ -8,9 +8,48 @@
 </head>
 <body style="margin: 0px">
     <!-- original: 640 x 480 -->
-    <div id="viewport" style="width: 480px; height: 360px; overflow: hidden;">
-        <canvas width="3200" height="3200" style="image-rendering: pixelated;"></canvas>
+    <div id="dialog">
+        &nbsp;
+        <div id="dialog-ok">OK</div>
     </div>
+    <div id="viewport" style="width: 480px; height: 360px; overflow: hidden;">
+        <canvas width="3200" height="3200"></canvas>
+    </div>
+
+    <style>
+        canvas {
+            image-rendering: pixelated;
+        }
+
+        #dialog {
+            width: 480px;
+            height: 120px;
+            position: absolute;
+            background-color: rgb(156 85 0);
+            border: 3px solid;
+            top: 240px;
+            padding: 3%;
+            box-sizing: border-box;
+            text-align: center;
+            font-family: "Consolas", "Lucida Console", "Monaco", monospace;
+            font-size: small;
+            font-weight: 600;
+            overflow-y: auto;
+            scrollbar-gutter: stable;
+            display: none;
+        }
+
+        #dialog-ok {
+            width: 10%;
+            height: 30%;
+            position: relative;
+            top: 70%;
+            left: 90%;
+            cursor: pointer;
+            user-select: none;
+        }
+
+    </style>
 
     <script src="rpg'er.js"></script>
 </body>
